@@ -1,7 +1,6 @@
 package fulbo;
 
 import fulbo.Partido.Resultado;
-import programa.Configuracion;
 
 public class Pronostico {
 	private Partido partido;
@@ -50,7 +49,7 @@ public class Pronostico {
 		int p=0;
 		
 		if(partido.resultado(equipo)==resultado) {
-			p=Configuracion.getPuntosPorAcierto();
+			p=1;
 		}
 		
 		return p;

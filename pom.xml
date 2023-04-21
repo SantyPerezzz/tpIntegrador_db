@@ -5,18 +5,23 @@
   <version>1</version>
   <name>tpIntegradorJava</name>
     <dependencies>
-	  <dependency>
-		  <groupId>org.junit.jupiter</groupId>
-		  <artifactId>junit-jupiter</artifactId>
-		  <version>5.9.2</version>
-	  </dependency>
-	  <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
-<dependency>
-    <groupId>org.projectlombok</groupId>
-    <artifactId>lombok</artifactId>
-    <version>1.18.24</version>
-    <scope>provided</scope>
-</dependency>
-
+	  	<dependency>
+		  	<groupId>org.junit.jupiter</groupId>
+		 	 <artifactId>junit-jupiter</artifactId>
+		  	<version>5.9.2</version>
+	  	</dependency>
+	  	<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+		<dependency>
+		    <groupId>org.projectlombok</groupId>
+		    <artifactId>lombok</artifactId>
+		    <version>1.18.24</version>
+		    <scope>provided</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+		<dependency>
+		    <groupId>mysql</groupId>
+		    <artifactId>mysql-connector-java</artifactId>
+		    <version>8.0.30</version>
+		</dependency>
   </dependencies>
 </project>

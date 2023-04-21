@@ -2,10 +2,12 @@ package programa;
 
 import java.nio.file.Path;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.ArrayList;
 
 import fulbo.*;
 import fulbo.Partido.Resultado;
+import java.sql.*;
 
 public class Funciones {
 	
@@ -86,6 +88,20 @@ public class Funciones {
 		return b;
 	}
 	
+	public static void leerArchivoConfiguraciones(Path configuracionesPath,String dbUrl,String dbUser,String dbPw,int puntosPorAcierto,int puntosExtra) {
+		try{
+			List<String> aux=Files.readAllLines(configuracionesPath);
+			dbUrl=aux.get(0);
+			dbUser=aux.get(1);
+			dbPw=aux.get(2);
+			puntosPorAcierto= Integer.parseInt(aux.get(3));
+			puntosExtra= Integer.parseInt(aux.get(4));
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
+	}
+	
 	public static void leerArchivoResultados(Path resultadosPath,ArrayList<Ronda> rondas,ArrayList<Partido> partidos,ArrayList<Equipo> equipos) {
 		try {
 			for (String linea : Files.readAllLines(resultadosPath)) {
@@ -145,6 +161,10 @@ public class Funciones {
 		}catch(Exception e) {
 			System.out.println(e);
 		}
+		
+	}
+	
+	public static void leerBaseDatosPronosticos() {
 		
 	}
 	
