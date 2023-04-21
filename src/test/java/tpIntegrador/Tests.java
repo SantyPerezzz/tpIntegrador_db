@@ -24,7 +24,7 @@ class Tests {
         
        
         Funciones.leerArchivoResultados(resultadosPath,rondas,partidos,equipos);
-        Funciones.leerArchivoPronosticos(pronosticoPath,participantes,equipos,partidos);
+       // Funciones.leerArchivoPronosticos(pronosticoPath,participantes,equipos,partidos);
 
         Participante a= participantes.get(0);
         

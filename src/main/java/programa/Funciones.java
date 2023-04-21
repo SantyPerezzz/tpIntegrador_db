@@ -55,11 +55,11 @@ public class Funciones {
 		return pos;
 	}
 	
-	public static Resultado resEquipo1(String linea[]) {
+	public static Resultado resEquipo1(int resultado) {
 		Resultado res=Resultado.perdio;
-		if(linea[2].equals("X")) {
+		if(resultado==1) {
 			res= Resultado.gano;
-		}else if(linea[3].equals("X")) {
+		}else if(resultado==0) {
 			res= Resultado.empato;
 		}
 		
@@ -88,18 +88,22 @@ public class Funciones {
 		return b;
 	}
 	
-	public static void leerArchivoConfiguraciones(Path configuracionesPath,String dbUrl,String dbUser,String dbPw,int puntosPorAcierto,int puntosExtra) {
+	public static String[] leerArchivoConfiguraciones(Path configuracionesPath,String dbUrl,String dbUser,String dbPw,Integer puntosPorAcierto,Integer puntosExtra) {
+		String[] arreglo= new String[5];
+		
 		try{
 			List<String> aux=Files.readAllLines(configuracionesPath);
-			dbUrl=aux.get(0);
-			dbUser=aux.get(1);
-			dbPw=aux.get(2);
-			puntosPorAcierto= Integer.parseInt(aux.get(3));
-			puntosExtra= Integer.parseInt(aux.get(4));
+			arreglo[0]=aux.get(0);
+			arreglo[1]=aux.get(1);
+			arreglo[2]=aux.get(2);
+			arreglo[3]=aux.get(3);
+			arreglo[4]=aux.get(4);
 		}
 		catch(Exception e) {
 			System.out.println(e);
 		}
+		dbUrl=arreglo[0];
+		return arreglo;
 	}
 	
 	public static void leerArchivoResultados(Path resultadosPath,ArrayList<Ronda> rondas,ArrayList<Partido> partidos,ArrayList<Equipo> equipos) {
@@ -138,7 +142,7 @@ public class Funciones {
 		}
 	}
 	
-	public static void leerArchivoPronosticos(Path pronosticoPath,ArrayList<Participante> participantes,ArrayList<Equipo> equipos,ArrayList<Partido> partidos) {
+	/*public static void leerArchivoPronosticos(Path pronosticoPath,ArrayList<Participante> participantes,ArrayList<Equipo> equipos,ArrayList<Partido> partidos) {
 		try {
 			for(String linea: Files.readAllLines(pronosticoPath)) {
             	String nomPart= linea.split(",")[0];
@@ -162,9 +166,39 @@ public class Funciones {
 			System.out.println(e);
 		}
 		
-	}
+	}*/
 	
-	public static void leerBaseDatosPronosticos() {
+	public static void leerBaseDatosPronosticos(String dbUrl,String dbUser,String dbPw,ArrayList<Participante> participantes,ArrayList<Equipo> equipos,ArrayList<Partido> partidos) {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con= DriverManager.getConnection(dbUrl,dbUser,dbPw);
+			Statement stmt= con.createStatement();
+			
+			ResultSet rs= stmt.executeQuery("select participante,equipo1,resultado,equipo2 from pronosticos");
+			while(rs.next()) {
+				String nomPart= rs.getString(1);
+				Participante auxPart= new Participante(nomPart);
+            	if(posParticipante(participantes,nomPart)!=-1) {
+            		auxPart=participantes.get(posParticipante(participantes, nomPart));
+            	}else {
+            		participantes.add(auxPart);
+            	}
+            	String nomEq1= rs.getString(2);
+            	String nomEq2= rs.getString(4);
+            	Equipo eqAux1= equipos.get(posEquipo(equipos, nomEq1));
+            	Equipo eqAux2= equipos.get(posEquipo(equipos,nomEq2));
+            	
+            	Pronostico aux = new Pronostico(buscarPartido(partidos,eqAux1,eqAux2),eqAux1,resEquipo1(rs.getInt(3)));
+            	
+            	auxPart.agregarPronostico(aux);
+			}
+			
+			
+			con.close();
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
 		
 	}
 	
