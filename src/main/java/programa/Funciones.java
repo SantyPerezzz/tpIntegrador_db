@@ -67,14 +67,6 @@ public class Funciones {
 		return res;
 	}
 
-	public static String stringVs(ArrayList<Partido> partidos) {
-		String partidosString = "";
-		for (Partido p : partidos) {
-			partidosString += p.getEquipo1().getNombre() + " vs " + p.getEquipo2().getNombre() + "\n";
-		}
-		return partidosString;
-	}
-
 	public static boolean verificarLineaResultado(String linea) {
 		boolean b = false;
 		String[] lineaSpliteada = linea.split(",");
@@ -181,18 +173,4 @@ public class Funciones {
 				+ "Pronosticos acertados: " + p.pronosticosAcertados().size());
 	}
 
-	/*
-	 * public static boolean nombreADefinir(ArrayList<Ronda> rondas,Participante
-	 * part, String nroRonda) {
-	 * boolean r=true;
-	 * Ronda auxRonda= new Ronda("0");
-	 * for(Ronda ron:rondas) {
-	 * if(ron.getNro().equals(nroRonda)) {
-	 * auxRonda=ron;
-	 * }
-	 * }
-	 * 
-	 * return r;
-	 * }
-	 */
 }
