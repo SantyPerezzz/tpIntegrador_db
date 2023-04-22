@@ -89,8 +89,7 @@ public class Funciones {
 		return b;
 	}
 
-	public static void leerArchivoConfiguraciones(Path configuracionesPath, ArrayList<String> configuraciones,
-			Integer puntosPorAcierto, Integer puntosExtra) {
+	public static void leerArchivoConfiguraciones(Path configuracionesPath, ArrayList<String> configuraciones) {
 		int i = 0;
 		try {
 			List<String> aux = Files.readAllLines(configuracionesPath);
@@ -141,51 +140,20 @@ public class Funciones {
 		}
 	}
 
-	/*
-	 * public static void leerArchivoPronosticos(Path
-	 * pronosticoPath,ArrayList<Participante> participantes,ArrayList<Equipo>
-	 * equipos,ArrayList<Partido> partidos) {
-	 * try {
-	 * for(String linea: Files.readAllLines(pronosticoPath)) {
-	 * String nomPart= linea.split(",")[0];
-	 * Participante auxPart= new Participante(nomPart);
-	 * if(posParticipante(participantes,nomPart)!=-1) {
-	 * auxPart=participantes.get(posParticipante(participantes, nomPart));
-	 * }else {
-	 * participantes.add(auxPart);
-	 * }
-	 * 
-	 * String nomEq1= linea.split(",")[1];
-	 * String nomEq2= linea.split(",")[5];
-	 * Equipo eqAux1= equipos.get(posEquipo(equipos, nomEq1));
-	 * Equipo eqAux2= equipos.get(posEquipo(equipos,nomEq2));
-	 * 
-	 * Pronostico aux = new
-	 * Pronostico(buscarPartido(partidos,eqAux1,eqAux2),eqAux1,resEquipo1(linea.
-	 * split(",")));
-	 * 
-	 * auxPart.agregarPronostico(aux);
-	 * }
-	 * }catch(Exception e) {
-	 * System.out.println(e);
-	 * }
-	 * 
-	 * }
-	 */
 
-	public static void leerBaseDatosPronosticos(ArrayList<String> configuraciones,
-			ArrayList<Participante> participantes, ArrayList<Equipo> equipos,
-			ArrayList<Partido> partidos) {
+	public static void leerBaseDatosPronosticos(ArrayList<String> configuraciones,ArrayList<Participante> participantes, ArrayList<Equipo> equipos,ArrayList<Partido> partidos) {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			Connection con = DriverManager.getConnection(configuraciones.get(0), configuraciones.get(1),
-					configuraciones.get(2));
+			Connection con = DriverManager.getConnection(configuraciones.get(0), configuraciones.get(1),configuraciones.get(2));
 			Statement stmt = con.createStatement();
-
+			
+			int puntosPorAcierto= Integer.parseInt(configuraciones.get(3));
+			int puntosExtra= Integer.parseInt(configuraciones.get(4));
+			
 			ResultSet rs = stmt.executeQuery("select participante,equipo1,resultado,equipo2 from pronosticos");
 			while (rs.next()) {
 				String nomPart = rs.getString(1);
-				Participante auxPart = new Participante(nomPart);
+				Participante auxPart = new Participante(nomPart,puntosExtra);
 				if (posParticipante(participantes, nomPart) != -1) {
 					auxPart = participantes.get(posParticipante(participantes, nomPart));
 				} else {
@@ -196,8 +164,7 @@ public class Funciones {
 				Equipo eqAux1 = equipos.get(posEquipo(equipos, nomEq1));
 				Equipo eqAux2 = equipos.get(posEquipo(equipos, nomEq2));
 
-				Pronostico aux = new Pronostico(buscarPartido(partidos, eqAux1, eqAux2), eqAux1,
-						resEquipo1(rs.getInt(3)));
+				Pronostico aux = new Pronostico(buscarPartido(partidos, eqAux1, eqAux2), eqAux1,resEquipo1(rs.getInt(3)),puntosPorAcierto);
 
 				auxPart.agregarPronostico(aux);
 			}
@@ -209,23 +176,8 @@ public class Funciones {
 
 	}
 
-	public static boolean acertoPronosticosDeRonda(Participante part, Ronda ronda) {
-		boolean r = true;
-		ArrayList<Partido> partidosAcertados = new ArrayList<Partido>();
-		for (Pronostico p : part.pronosticosAcertados()) {
-			partidosAcertados.add(p.getPartido());
-		}
-		for (Partido p : ronda.getPartidos()) {
-			if (!partidosAcertados.contains(p)) {
-				r = false;
-			}
-		}
-
-		return r;
-	}
-
-	public static void mostrarParticipante(Participante p) {
-		System.out.println("Participante: " + p.getNombre() + "\t" + "Puntos: " + p.puntosTotales() + "\t"
+	public static void mostrarParticipante(Participante p,ArrayList<Ronda> rondas) {
+		System.out.println("Participante: " + p.getNombre() + "\t" + "Puntos: " + p.puntosTotales(rondas) + "\t"
 				+ "Pronosticos acertados: " + p.pronosticosAcertados().size());
 	}
 

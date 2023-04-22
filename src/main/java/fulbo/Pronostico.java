@@ -6,6 +6,7 @@ public class Pronostico {
 	private Partido partido;
 	private Equipo equipo;
 	private Resultado resultado;
+	private int puntosPorAcierto;
 	
 	public Pronostico() {
 		this.partido= new Partido();
@@ -13,11 +14,12 @@ public class Pronostico {
 		this.resultado= null;
 	}
 
-	public Pronostico(Partido partido, Equipo equipo, Resultado resultado) {
+	public Pronostico(Partido partido, Equipo equipo, Resultado resultado, int puntosPorAcierto) {
 		super();
 		this.partido = partido;
 		this.equipo = equipo;
 		this.resultado = resultado;
+		this.puntosPorAcierto=puntosPorAcierto;
 	}
 
 	public Partido getPartido() {
@@ -44,12 +46,20 @@ public class Pronostico {
 		this.resultado = resultado;
 	}
 	
+	public int getPuntosPorAcierto() {
+		return puntosPorAcierto;
+	}
+	
+	public void setPuntosPorAcierto(int puntos) {
+		this.puntosPorAcierto=puntos;
+	}
+	
 	// Completar metodo puntos()
 	public int puntos() {
 		int p=0;
 		
 		if(partido.resultado(equipo)==resultado) {
-			p=1;
+			p=puntosPorAcierto;
 		}
 		
 		return p;

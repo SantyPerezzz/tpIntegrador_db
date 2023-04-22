@@ -14,29 +14,32 @@ class Tests {
 
 	@Test
 	void puntajeEnDosRondasConsecutivasTestDesdeArchivos() {
-		Path resultadosPath = Path.of("D:\\ProgramFilesx86\\workspace\\tpIntegrador\\src\\main\\java\\programa\\resultados");
-        Path pronosticoPath = Path.of("D:\\ProgramFilesx86\\workspace\\tpIntegrador\\src\\main\\java\\programa\\pronostico.txt");
+		Path resultadosPath = Path.of("D:\\ProgramFilesx86\\workspace\\tpIntegrador_db\\src\\main\\java\\programa\\resultados");
+        Path configuracionesPath = Path.of("D:\\ProgramFilesx86\\workspace\\tpIntegrador_db\\src\\main\\java\\programa\\configuraciones");
         
         ArrayList<Ronda> rondas= new ArrayList<Ronda>();
         ArrayList<Partido> partidos = new ArrayList<Partido>();
         ArrayList<Equipo> equipos= new ArrayList<Equipo>();
         ArrayList<Participante> participantes= new ArrayList<Participante>();
+        ArrayList<String> configuraciones= new ArrayList<String>();
         
-       
+        Funciones.leerArchivoConfiguraciones(configuracionesPath, configuraciones);
         Funciones.leerArchivoResultados(resultadosPath,rondas,partidos,equipos);
-       // Funciones.leerArchivoPronosticos(pronosticoPath,participantes,equipos,partidos);
+        Funciones.leerBaseDatosPronosticos(configuraciones,participantes,equipos,partidos);
 
         Participante a= participantes.get(0);
         
-        assertEquals(9,a.puntosTotales());
+        assertEquals(23,a.puntosTotales(rondas));
 	}
 	
 	@Test
 	void puntajeEnDosRondasConsecutivas() {
-		Participante pepe=new Participante("Pepe");
-		
+		Participante pepe=new Participante("Pepe",0);
+		ArrayList<Ronda> rondas= new ArrayList<Ronda>();
 		Ronda r1=new Ronda("1");
 		Ronda r2=new Ronda("2");
+		rondas.add(r1);
+		rondas.add(r2);
 		Equipo boca=new Equipo("Boca","bokabokabokaaaa");
 		Equipo river=new Equipo("River","gallinita");
 		Partido p1= new Partido(boca,river,1,2);
@@ -44,10 +47,10 @@ class Tests {
 		r1.agregarPartido(p1);
 		r2.agregarPartido(p2);
 		
-		pepe.agregarPronostico(new Pronostico(p1,boca,Resultado.perdio));
-		pepe.agregarPronostico(new Pronostico(p2,boca,Resultado.gano));
+		pepe.agregarPronostico(new Pronostico(p1,boca,Resultado.perdio,1));
+		pepe.agregarPronostico(new Pronostico(p2,boca,Resultado.gano,1));
 		
-		assertEquals(2,pepe.puntosTotales());
+		assertEquals(2,pepe.puntosTotales(rondas));
 	}
 
 }
