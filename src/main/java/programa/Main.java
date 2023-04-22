@@ -7,8 +7,8 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String[] args) {
-        Path resultadosPath = Path.of("D:\\ProgramFilesx86\\workspace\\tpIntegrador_db\\src\\main\\java\\programa\\resultados");
-        Path configuracionesPath = Path.of("D:\\ProgramFilesx86\\workspace\\tpIntegrador_db\\src\\main\\java\\programa\\configuraciones");
+        Path resultadosPath = Path.of(args[0]);
+        Path configuracionesPath = Path.of(args[1]);
 
         ArrayList<Ronda> rondas = new ArrayList<Ronda>();
         ArrayList<Partido> partidos = new ArrayList<Partido>();
