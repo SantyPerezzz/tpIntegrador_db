@@ -2,7 +2,6 @@ package programa;
 
 import java.nio.file.Path;
 import java.nio.file.Files;
-import java.util.List;
 import java.util.ArrayList;
 
 import fulbo.*;
@@ -56,6 +55,18 @@ public class Funciones {
 		return pos;
 	}
 
+	public static int posFase(ArrayList<Fase> fases, String nom) {
+		int pos = -1;
+		for (Fase f : fases) {
+			if (f.getNombre().equals(nom)) {
+				pos = fases.indexOf(f);
+			}
+		}
+
+		return pos;
+	}
+	
+
 	public static Resultado resEquipo1(int resultado) {
 		Resultado res = Resultado.perdio;
 		if (resultado == 1) {
@@ -70,7 +81,7 @@ public class Funciones {
 	public static boolean verificarLineaResultado(String linea) {
 		boolean b = false;
 		String[] lineaSpliteada = linea.split(",");
-		if (lineaSpliteada.length == 5) {
+		if (lineaSpliteada.length == 6) {
 			if (Integer.parseInt(lineaSpliteada[2]) >= 0) {
 				if (Integer.parseInt(lineaSpliteada[3]) >= 0) {
 					b = true;
@@ -82,23 +93,27 @@ public class Funciones {
 	}
 
 	public static void leerArchivoConfiguraciones(Path configuracionesPath, ArrayList<String> configuraciones) {
-		int i = 0;
 		try {
-			List<String> aux = Files.readAllLines(configuracionesPath);
-			while (i < 5) {
-				configuraciones.add(aux.get(i));
-				i++;
+			for(String linea: Files.readAllLines(configuracionesPath)) {
+				configuraciones.add(linea);
 			}
+			
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 	}
 
-	public static void leerArchivoResultados(Path resultadosPath, ArrayList<Ronda> rondas, ArrayList<Partido> partidos,
-			ArrayList<Equipo> equipos) {
+	public static void leerArchivoResultados(Path resultadosPath, ArrayList<Ronda> rondas, ArrayList<Partido> partidos,ArrayList<Equipo> equipos,ArrayList<Fase> fases) {
 		try {
 			for (String linea : Files.readAllLines(resultadosPath)) {
 				if (verificarLineaResultado(linea)) {
+					String nomFase= linea.split(",")[5];
+					Fase auxFase= new Fase(nomFase);
+					if(posFase(fases, nomFase) != -1) {
+						auxFase=fases.get(posFase(fases,nomFase));
+					}else {
+						fases.add(auxFase);
+					}
 					String nroRonda = linea.split(",")[0];
 					Ronda auxRonda = new Ronda(nroRonda);
 					if (posRonda(rondas, nroRonda) != -1) {
@@ -106,7 +121,8 @@ public class Funciones {
 					} else {
 						rondas.add(auxRonda);
 					}
-
+					auxFase.agregarRonda(auxRonda);
+					
 					String nomEq1 = linea.split(",")[1];
 					String nomEq2 = linea.split(",")[4];
 					Equipo aux1 = new Equipo(nomEq1, "");
@@ -125,6 +141,7 @@ public class Funciones {
 							Integer.parseInt(linea.split(",")[3]));
 					partidos.add(auxPart);
 					auxRonda.agregarPartido(auxPart);
+					
 				}
 			}
 		} catch (Exception e) {
@@ -141,11 +158,12 @@ public class Funciones {
 			
 			int puntosPorAcierto= Integer.parseInt(configuraciones.get(3));
 			int puntosExtra= Integer.parseInt(configuraciones.get(4));
+			int puntosExtraFase= Integer.parseInt(configuraciones.get(5));
 			
 			ResultSet rs = stmt.executeQuery("select participante,equipo1,resultado,equipo2 from pronosticos");
 			while (rs.next()) {
 				String nomPart = rs.getString(1);
-				Participante auxPart = new Participante(nomPart,puntosExtra);
+				Participante auxPart = new Participante(nomPart,puntosExtra,puntosExtraFase);
 				if (posParticipante(participantes, nomPart) != -1) {
 					auxPart = participantes.get(posParticipante(participantes, nomPart));
 				} else {
@@ -168,8 +186,8 @@ public class Funciones {
 
 	}
 
-	public static void mostrarParticipante(Participante p,ArrayList<Ronda> rondas) {
-		System.out.println("Participante: " + p.getNombre() + "\t" + "Puntos: " + p.puntosTotales(rondas) + "\t"
+	public static void mostrarParticipante(Participante p,ArrayList<Ronda> rondas,ArrayList<Fase> fases,ArrayList<Equipo> equipos) {
+		System.out.println("Participante: " + p.getNombre() + "\t" + "Puntos: " + p.puntosTotales(rondas,fases,equipos) + "\t"
 				+ "Pronosticos acertados: " + p.pronosticosAcertados().size());
 	}
 

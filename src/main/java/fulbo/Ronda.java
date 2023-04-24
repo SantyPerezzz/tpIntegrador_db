@@ -36,4 +36,14 @@ public class Ronda {
 	public void agregarPartido(Partido part) {
 		partidos.add(part);
 	}
+	
+	public ArrayList<Partido> partidosEquipo(Equipo eq){
+		ArrayList<Partido> r= new ArrayList<Partido>();
+		for(Partido p: partidos) {
+			if(p.getEquipo1().getNombre().equals(eq.getNombre()) || p.getEquipo2().getNombre().equals(eq.getNombre())) {
+				r.add(p);
+			}
+		}
+		return r;
+	}
 }

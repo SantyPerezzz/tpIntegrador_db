@@ -27,5 +27,8 @@ public class Fase {
 		this.rondas=rondas;
 	}
 	
+	public void agregarRonda(Ronda r) {
+		rondas.add(r);
+	}
 	
 }

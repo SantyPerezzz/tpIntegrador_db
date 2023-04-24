@@ -6,17 +6,20 @@ public class Participante {
 	private String nombre;
 	private ArrayList<Pronostico> pronosticos;
 	private int puntosExtra;
+	private int puntosExtraFase;
 	
-	public Participante(String nombre,int puntosExtra) {
+	public Participante(String nombre,int puntosExtra, int puntosExtraFase) {
 		this.nombre=nombre;
 		this.pronosticos=new ArrayList<Pronostico>();
 		this.puntosExtra=puntosExtra;
+		this.puntosExtraFase=puntosExtraFase;
 	}
 	
-	public Participante(String nombre, ArrayList<Pronostico> pronosticos,int puntosExtra) {
+	public Participante(String nombre, ArrayList<Pronostico> pronosticos,int puntosExtra,int puntosExtraFase) {
 		this.nombre = nombre;
 		this.pronosticos = pronosticos;
 		this.puntosExtra=puntosExtra;
+		this.puntosExtraFase=puntosExtraFase;
 	}
 	
 	public String getNombre() {
@@ -64,7 +67,35 @@ public class Participante {
 		return r;
 	}
 	
-	public int puntosTotales(ArrayList<Ronda> rondas) {
+	public boolean acertoPronosticosRondaEquipo(Ronda r,Equipo eq) {
+		boolean ret=true;
+		ArrayList<Partido> partidosAcertados = new ArrayList<Partido>();
+		ArrayList<Partido> partidosEq= r.partidosEquipo(eq);
+		for(Pronostico p:pronosticosAcertados()) {
+			partidosAcertados.add(p.getPartido());
+		}
+		for(Partido p: partidosEq) {
+			if(!partidosAcertados.contains(p)) {
+				ret=false;
+			}
+		}
+		
+		return ret;
+	}
+	
+	public boolean acertoPronosticosDeFaseEquipo(Fase fase, Equipo eq) {
+		boolean ret=true;
+		
+		for(Ronda r: fase.getRondas()) {
+			if(!acertoPronosticosRondaEquipo(r,eq)) {
+				ret=false;
+			}
+		}
+		
+		return ret;
+	}
+	
+	public int puntosTotales(ArrayList<Ronda> rondas,ArrayList<Fase> fases,ArrayList<Equipo> equipos) {
 		int puntos=0;
 		for(Pronostico p:pronosticos) {
 			puntos+=p.puntos();
@@ -73,6 +104,14 @@ public class Participante {
 		for(Ronda r:rondas) {
 			if(acertoPronosticosDeRonda(r)) {
 				puntos+=puntosExtra;
+			}
+		}
+		
+		for(Equipo eq:equipos) {
+			for(Fase f:fases) {
+				if(acertoPronosticosDeFaseEquipo(f, eq)) {
+					puntos+=puntosExtraFase;
+				}
 			}
 		}
 		

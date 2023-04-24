@@ -17,6 +17,7 @@ class Tests {
 		Path resultadosPath = Path.of("D:\\ProgramFilesx86\\workspace\\tpIntegrador_db\\src\\main\\java\\programa\\resultados");
         Path configuracionesPath = Path.of("D:\\ProgramFilesx86\\workspace\\tpIntegrador_db\\src\\main\\java\\programa\\configuraciones");
         
+        ArrayList<Fase> fases= new ArrayList<Fase>();
         ArrayList<Ronda> rondas= new ArrayList<Ronda>();
         ArrayList<Partido> partidos = new ArrayList<Partido>();
         ArrayList<Equipo> equipos= new ArrayList<Equipo>();
@@ -29,13 +30,16 @@ class Tests {
 
         Participante a= participantes.get(0);
         
-        assertEquals(23,a.puntosTotales(rondas));
+        assertEquals(23,a.puntosTotales(rondas,fases,equipos));
 	}
 	
 	@Test
 	void puntajeEnDosRondasConsecutivas() {
 		Participante pepe=new Participante("Pepe",0);
 		ArrayList<Ronda> rondas= new ArrayList<Ronda>();
+		ArrayList<Fase> fases= new ArrayList<Fase>();
+		ArrayList<Equipo> equipos= new ArrayList<Equipo>();
+		
 		Ronda r1=new Ronda("1");
 		Ronda r2=new Ronda("2");
 		rondas.add(r1);
@@ -50,7 +54,7 @@ class Tests {
 		pepe.agregarPronostico(new Pronostico(p1,boca,Resultado.perdio,1));
 		pepe.agregarPronostico(new Pronostico(p2,boca,Resultado.gano,1));
 		
-		assertEquals(2,pepe.puntosTotales(rondas));
+		assertEquals(2,pepe.puntosTotales(rondas,fases,equipos));
 	}
 
 }

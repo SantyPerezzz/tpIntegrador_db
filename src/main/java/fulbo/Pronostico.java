@@ -54,11 +54,15 @@ public class Pronostico {
 		this.puntosPorAcierto=puntos;
 	}
 	
+	public boolean acertado() {
+		return partido.resultado(equipo)==resultado;
+	}
+	
 	// Completar metodo puntos()
 	public int puntos() {
 		int p=0;
 		
-		if(partido.resultado(equipo)==resultado) {
+		if(acertado()) {
 			p=puntosPorAcierto;
 		}
 		
